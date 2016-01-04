@@ -1,8 +1,9 @@
 package io.norberg.automatter.jackson;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -101,5 +102,16 @@ public class AutoMatterModuleTest {
     assertThat(parsed.list().isEmpty(), is(true));
     assertThat(parsed.set().isEmpty(), is(true));
     assertThat(parsed.map().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testAbsentOptional() throws Exception {
+    final WithOptional withOptional = new WithOptionalBuilder()
+        .a(17)
+        .build();
+    final String json = mapper.writeValueAsString(withOptional);
+    final JsonNode tree = mapper.readTree(json);
+    assertThat(tree.has("a"), is(true));
+    assertThat(tree.has("b"), is(false));
   }
 }
